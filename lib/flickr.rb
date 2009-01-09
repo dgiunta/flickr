@@ -140,9 +140,30 @@ class Flickr
   end
   
   # Implements flickr.people.findByEmail and flickr.people.findByUsername. 
+  # 
+  # Updated by Dave Giunta, Giunta Creative on 01/09/2009
+  #
+  # <b>Description:</b> The original flickr library provided only flickr.people.findByEmail, 
+  # which rescued from UserNotFound errors by checking flickr.people.findByUsername.
+  # 
+  # This works great, except that Flickr also has
+  #
+  # <b>Arguments:</b> 
+  #
+  # <b>Returns:</b> 
+  #
+  # <em>Syntax: </em>
   def users(lookup=nil)
-    user = find_by_url("flickr.com/people/#{lookup}") || people_findByEmail('find_email'=>lookup)['user'] rescue people_findByUsername('username'=>lookup)['user'] rescue find_by_url("flickr.com/people/#{lookup}")
-    return user.class == User ? user : User.new("id" => user["nsid"], "username" => user["username"], "client" => self)
+    user = find_by_url("flickr.com/people/#{lookup}") || people_findByEmail('find_email'=>lookup)['user'] rescue people_findByUsername('username'=>lookup)['user']
+    
+    return case user.class.to_s
+    when "Flickr::User"
+      user
+    when "Hash"
+      User.new("id" => user["nsid"], "username" => user["username"], "client" => self)
+    else
+      raise UserNotFound
+    end
   end
 
   # Implements flickr.groups.search
