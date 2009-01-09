@@ -27,4 +27,5 @@ Gem::Specification.new do |s|
   else
     s.add_dependency(%q<xml-simple>, [">= 1.0.7"])
   end
+  
 end
