@@ -1,4 +1,4 @@
-#require 'rubygems'
+require 'rubygems'
 require 'flickr'
 require 'test/unit'
 #require 'mocha'
