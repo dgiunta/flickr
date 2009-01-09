@@ -141,8 +141,8 @@ class Flickr
   
   # Implements flickr.people.findByEmail and flickr.people.findByUsername. 
   def users(lookup=nil)
-    user = people_findByEmail('find_email'=>lookup)['user'] rescue people_findByUsername('username'=>lookup)['user']
-    return User.new("id" => user["nsid"], "username" => user["username"], "client" => self)
+    user = find_by_url("flickr.com/people/#{lookup}") || people_findByEmail('find_email'=>lookup)['user'] rescue people_findByUsername('username'=>lookup)['user'] rescue find_by_url("flickr.com/people/#{lookup}")
+    return user.class == User ? user : User.new("id" => user["nsid"], "username" => user["username"], "client" => self)
   end
 
   # Implements flickr.groups.search
